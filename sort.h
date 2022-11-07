@@ -9,8 +9,8 @@
 #define DOWN 1
 
 /**
- * enum bool - Enumeration of boolean values.
- * @false: falsy with default value 0
+ * enum bool - Enumeration of boolean values
+ * @false: falsy value with default 0
  * @true: truthy value
  */
 typedef enum bool
@@ -35,7 +35,7 @@ typedef struct listint_s
 } listint_t;
 
 /*Helper for swapping*/
-void swap_ints(int *a, int *b);
+void swap(int *a, int *b);
 
 /*Printing helper functions */
 void print_array(const int *array, size_t size);
@@ -46,5 +46,10 @@ void bubble_sort(int *array, size_t size);
 void insertion_sort_list(listint_t **list);
 void selection_sort(int *array, size_t size);
 void quick_sort(int *array, size_t size);
+
+
+int lomuto_partition(int *array, size_t size, int left, int right);
+void lomuto_sort(int *array, size_t size, int left, int right);
+
 
 #endif
