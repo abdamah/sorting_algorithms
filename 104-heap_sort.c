@@ -1,72 +1,102 @@
 #include "sort.h"
+
+
 /**
- * swap - Swap values Function
- * @a: Value
- * @b: Value
- * Return: Void - No return
+ * swapnprint - swaps two integers in an array and prints the array
+ * @a: first number
+ * @b: second number
+ * @array: the arry to be printed
+ * @size: size of the array
  */
-void swap(int *a, int *b)
+void swapnprint(int *a, int *b, int *array, size_t size)
 {
-	int temp = *a;
+	int tmp = *a;
+
 	*a = *b;
-	*b = temp;
+	*b = tmp;
+	print_array(array, size);
 }
 
 
 /**
- * heapify - Heapify the root element again so that we have the
- * highest element at root.
- * @array: Array of integers
- * @index: Index of the array
- * @size: Size of the array
- * Return: Void - No return
+ * shiftDown - fix's part of a heap trea to be correct
+ * @parent: the parent of the sub heap
+ * @end: the last index upto which the heap will be fixed
+ * @array: the array containing the subset to be fixed
+ * @size: full size of the array
  */
-void heapify(int *array, int index, size_t size)
+void shiftDown(int *array, size_t parent, size_t end, size_t size)
 {
-	int larg = index;
-	size_t child_l = 2 * index + 1;
-	size_t child_r = 2 * index + 2;
+	size_t lchild = parent * 2 + 1, rchild;
+	size_t swap_with = parent;
 
-	if (child_l < size && array[child_l] > array[larg])
+	while (lchild < end)
 	{
-		larg = child_l;
+
+		if (array[lchild] > array[swap_with])
+			swap_with = lchild;
+
+		rchild = lchild + 1;
+		if (rchild < end && array[rchild] > array[swap_with])
+			swap_with = rchild;
+
+		/*if swap_with didnt change the node is already ok*/
+		if (parent == swap_with)
+			return;
+		/*other wise swap and fix the children*/
+		else
+		{
+			swapnprint(array + parent, array + swap_with, array, size);
+			parent = swap_with;
+			lchild = parent * 2 + 1;
+		}
 	}
 
-	if (child_r < size && array[child_r] > array[larg])
+
+}
+
+
+
+/**
+ * buildMaxHeap - builds a max heap
+ * @array: the array to be changed into a heap
+ * @size: the size of the array
+ */
+void buildMaxHeap(int *array, size_t size)
+{
+	size_t parent = size - 1;
+	size_t root = 0;
+
+	while (parent + 1 > root)
 	{
-		larg = child_r;
+		shiftDown(array, parent, size, size);
+		if (!parent)
+			break;
+		parent--;
 	}
 
-	if (larg != index)
-	{
-		swap(&array[index], &array[larg]);
-		heapify(array, larg, size);
-	}
 }
 
 /**
- * heap_sort - Sorts an array of integers in ascending
- * order using the Heap sort algorithm
- * @array: Array of integers
- * @size: Size of the array
- * Return: Void - No return
+ * heap_sort - an implementaion of the heap_sort algorithm
+ * @array: the array to be sorted
+ * @size: the size of the array
  */
 void heap_sort(int *array, size_t size)
 {
-	int i = 0;
+	size_t end = size - 1;
+	size_t root = 0;
 
-	for (i = size / 2 - 1; i >= 0; i--)
+	if (size <= 1)
+		return;
+
+	buildMaxHeap(array, size);
+
+	while (end > root)
 	{
-		heapify(array, i, size);
-		print_array(array, size);
+		swapnprint(array + root, array + end, array, size);
+		shiftDown(array, root, end, size);
+		end--;
 	}
 
-	for (i = size - 1; i >= 0; i--)
-	{
-		swap(&array[0], &array[i]);
-		print_array(array, size);
-		heapify(array, 0, i);
-		print_array(array, size);
-	}
 }
-
